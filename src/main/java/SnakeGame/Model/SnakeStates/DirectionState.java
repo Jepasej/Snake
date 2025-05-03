@@ -1,8 +1,10 @@
 package SnakeGame.Model.SnakeStates;
 
+import javafx.scene.input.KeyCode;
+
 public interface DirectionState
 {
-    void changeDirection();
+    DirectionState changeDirection(KeyCode direction);
 
     int updateX(int x, int move);
 

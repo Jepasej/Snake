@@ -18,71 +18,32 @@ public class GameView {
     private Canvas canvas;
     private GraphicsContext gc;
     private Pane root;
-    Snake snake;
-
-    private int gameSpeedMillis = 500;
+    private Stage stage;
+    private Scene scene;
 
     public GameView() {
-        Stage stage = new Stage();
+
+        initialise();
+
+    }
+
+    private void initialise()
+    {
         root = new Pane();
-        Scene scene = new Scene(root, 800, 600);
+        stage = new Stage();
+        scene = new Scene(root, 800, 600);
         canvas = new Canvas(root.getWidth(), root.getHeight());
         root.getChildren().add(canvas);
         gc = canvas.getGraphicsContext2D();
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(5.0);
-        snake = new Snake();
-        //initialiseGameArea();
-        setRootListeners();
-
-
         stage.setTitle("sssssssssssssnaaake gaaame!");
         stage.setScene(scene);
         stage.show();
-
-        Timeline tl = new Timeline();
-        tl.setCycleCount(Timeline.INDEFINITE);
-        tl.setAutoReverse(false);
-        tl.getKeyFrames().add(new KeyFrame(Duration.millis(gameSpeedMillis),
-                new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-
-                        //The food instance variable may not be less then zero
-                        processInput();
-                        update();
-                        render();
-                    }
-                }));
-        tl.play();
     }
-
-    private void setRootListeners()
-    {
-        root.widthProperty().addListener((obs, oldVal, newVal) -> {
-            canvas.setWidth(newVal.doubleValue());
-            //initialiseGameArea();
-        });
-        root.heightProperty().addListener((obs, oldVal, newVal) -> {
-            canvas.setHeight(newVal.doubleValue());
-            //initialiseGameArea();
-        });
-    }
-
-    private void processInput()
-    {
-
-    }
-
-    private void update()
-    {
-        snake.move();
-    }
-
-    private void render()
+    public void render(Snake snake)
     {
         clearGameArea();
-        gc.fillRect(snake.getHeadX(), snake.getHeadY(), 10, 10);
+        //Draws Snakes head
+        gc.fillRect(snake.getHeadX(), snake.getHeadY(), snake.getHeadSize(), snake.getHeadSize());
     }
 
     private void clearGameArea()
@@ -96,10 +57,48 @@ public class GameView {
 
 //    private void initialiseGameArea() {
 //        double width = canvas.getWidth();
-//        double height = canvas.getHeight();
+//        double height = canvas.getHeadSize();
 //
 //        gc.clearRect(0, 0, width, height);
 //        gc.strokeRect(10, 10, width - 20, height - 20);
 //        gc.fillRect(snake.getHeadX(),snake.getHeadY(),10,10);
 //    }
+
+    //region Getters&Setters
+    public Pane getRoot()
+    {
+        return root;
+    }
+
+    public void setRoot(Pane root)
+    {
+        this.root = root;
+    }
+
+    public Canvas getCanvas()
+    {
+        return canvas;
+    }
+
+    public void setCanvas(Canvas canvas)
+    {
+        this.canvas = canvas;
+    }
+    public GraphicsContext getGc()
+    {
+        return gc;
+    }
+
+    public void setGc(GraphicsContext gc)
+    {
+        this.gc = gc;
+    }
+
+    public Scene getScene()
+    {
+        return scene;
+    }
+    //endregion
+
+
 }

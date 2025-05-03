@@ -1,5 +1,7 @@
 package SnakeGame.Model;
 
+import javafx.scene.input.KeyCode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,8 +14,13 @@ public class Snake
     {
         head = new SnakeHead();
         body = new ArrayList<>();
-        //state = new MovingRight();
     }
+
+    public void handleInput(KeyCode keyCode)
+    {
+        head.changeFacing(keyCode);
+    }
+
     public void move()
     {
         head.updateCoordinates();
@@ -29,13 +36,9 @@ public class Snake
         return head.getY();
     }
 
-    public int getWidth()
+    public int getHeadSize()
     {
-        return head.getWIDTH();
+        return head.getSEGMENT_SIZE();
     }
 
-    public int getHeight()
-    {
-        return head.getHEIGHT();
-    }
 }

@@ -1,11 +1,21 @@
 package SnakeGame.Model.SnakeStates;
 
+import javafx.scene.input.KeyCode;
+
 public class FacingDown implements DirectionState
 {
     @Override
-    public void changeDirection()
+    public DirectionState changeDirection(KeyCode direction)
     {
+        switch(direction)
+        {
+            case KeyCode.RIGHT:
+                return new FacingRight();
 
+            case KeyCode.LEFT:
+                return new FacingLeft();
+        }
+        return this;
     }
 
     @Override

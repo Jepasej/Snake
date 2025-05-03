@@ -1,5 +1,6 @@
 package org.example.snakeugeopgave;
 
+import SnakeGame.Controller.GameController;
 import SnakeGame.View.GameView;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -13,7 +14,8 @@ public class SnakeGameMain extends Application
     @Override
     public void start(Stage stage) throws IOException
     {
-        GameView gameView = new GameView();
+        GameController gameController = new GameController();
+//        GameView gameView = new GameView();
     }
 
     public static void main(String[] args)

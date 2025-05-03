@@ -2,8 +2,9 @@ package SnakeGame.Model;
 
 import SnakeGame.Model.SnakeStates.DirectionState;
 import SnakeGame.Model.SnakeStates.FacingRight;
+import javafx.scene.input.KeyCode;
 
-public class SnakeHead extends Segment
+public class SnakeHead extends Block
 {
     private final int STARTING_X = 50;
     private final int STARTING_Y = 50;
@@ -25,6 +26,11 @@ public class SnakeHead extends Segment
         setCoordinates(new int[]{STARTING_X, STARTING_Y});
 
         direction = new FacingRight();
+    }
+
+    public void changeFacing(KeyCode code)
+    {
+        direction = direction.changeDirection(code);
     }
 
     public void updateCoordinates()
