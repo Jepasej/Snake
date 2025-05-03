@@ -7,7 +7,6 @@ public class Snake
 {
     SnakeHead head;
     List<SnakeBody> body;
-    //DirectionState state;
 
     public Snake()
     {

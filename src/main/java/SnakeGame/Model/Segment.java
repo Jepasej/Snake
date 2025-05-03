@@ -6,7 +6,7 @@ public class Segment
     private final int WIDTH = 10;
     private int x;
     private int y;
-    private int[] coordinates;
+    private int[] coordinates = new int[2];
 
     public int[] getCoordinates()
     {
