@@ -4,19 +4,12 @@ import SnakeGame.Model.Snake;
 import SnakeGame.View.GameView;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 
 public class GameController
 {
@@ -33,10 +26,12 @@ public class GameController
 
         snake = new Snake();
 
-        gameSpeedMillis = 500;
+        gameSpeedMillis = 250;
 
         setRootListeners();
 
+        //replace and delete later: - didnt work
+        //gameView.getGc().fillRect(50,50,10,10);
 
         runGame();
     }

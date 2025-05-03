@@ -2,9 +2,7 @@ package SnakeGame.Model;
 
 public class Block
 {
-    private final int SEGMENT_SIZE = 10;
-    private int x;
-    private int y;
+    private final int SIZE = 10;
     private int[] coordinates = new int[2];
 
     public int[] getCoordinates()
@@ -37,8 +35,8 @@ public class Block
         this.coordinates[1] = y;
     }
 
-    public int getSEGMENT_SIZE()
+    public int getSIZE()
     {
-        return SEGMENT_SIZE;
+        return SIZE;
     }
 }

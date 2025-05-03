@@ -6,8 +6,8 @@ import javafx.scene.input.KeyCode;
 
 public class SnakeHead extends Block
 {
-    private final int STARTING_X = 50;
-    private final int STARTING_Y = 50;
+    private final int STARTING_X = 200;
+    private final int STARTING_Y = 100;
     private final int STARTING_MOVE_INCREMENTS = 10;
 
     private int lastX;
@@ -49,5 +49,15 @@ public class SnakeHead extends Block
     {
         lastY = getY();
         setY( direction.updateY( lastY, movementIncrements ) );
+    }
+
+    public int getLastX()
+    {
+        return lastX;
+    }
+
+    public int getLastY()
+    {
+        return lastY;
     }
 }

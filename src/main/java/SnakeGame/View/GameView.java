@@ -1,17 +1,12 @@
 package SnakeGame.View;
 
 import SnakeGame.Model.Snake;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import SnakeGame.Model.SnakeBody;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.scene.layout.Pane;
-import javafx.util.Duration;
 
 public class GameView {
 
@@ -24,7 +19,7 @@ public class GameView {
     public GameView() {
 
         initialise();
-
+        gc.fillRect(50,50,10,10);
     }
 
     private void initialise()
@@ -38,20 +33,28 @@ public class GameView {
         stage.setTitle("sssssssssssssnaaake gaaame!");
         stage.setScene(scene);
         stage.show();
+
+
+
     }
     public void render(Snake snake)
     {
         clearGameArea();
-        //Draws Snakes head
+        //Draws Snake's head
         gc.fillRect(snake.getHeadX(), snake.getHeadY(), snake.getHeadSize(), snake.getHeadSize());
+        //Draws Snake's body
+        for (int i = 0; i < snake.getBodyLength(); i++)
+        {
+            gc.fillRect(snake.getBodyX(i), snake.getBodyY(i), snake.getBodySize(), snake.getBodySize());
+        }
     }
 
     private void clearGameArea()
     {
-        double gameAreaWidth = canvas.getWidth()-30;
-        double gameAreaHeight = canvas.getHeight()-30;
+        double gameAreaWidth = canvas.getWidth();
+        double gameAreaHeight = canvas.getHeight();
 
-        gc.clearRect(15, 15, gameAreaWidth, gameAreaHeight);
+        gc.clearRect(0, 0, gameAreaWidth, gameAreaHeight);
     }
 
 
