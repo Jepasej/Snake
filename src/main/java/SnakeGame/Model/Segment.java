@@ -2,28 +2,49 @@ package SnakeGame.Model;
 
 public class Segment
 {
-    final int HEIGHT = 10;
-    final int WIDTH = 10;
+    private final int HEIGHT = 10;
+    private final int WIDTH = 10;
     private int x;
     private int y;
+    private int[] coordinates;
 
-    public int getX()
+    public int[] getCoordinates()
     {
-        return x;
+        return coordinates;
     }
 
-    public void setX(int x)
+    public void setCoordinates(int[] coordinates)
     {
-        this.x = x;
+        this.coordinates = coordinates;
     }
 
-    public int getY()
+    protected int getX()
     {
-        return y;
+        return coordinates[0];
     }
 
-    public void setY(int y)
+    protected void setX(int x)
     {
-        this.y = y;
+        this.coordinates[0] = x;
+    }
+
+    protected int getY()
+    {
+        return coordinates[1];
+    }
+
+    protected void setY(int y)
+    {
+        this.coordinates[1] = y;
+    }
+
+    public int getHEIGHT()
+    {
+        return HEIGHT;
+    }
+
+    public int getWIDTH()
+    {
+        return WIDTH;
     }
 }

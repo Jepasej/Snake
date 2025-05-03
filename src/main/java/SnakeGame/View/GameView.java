@@ -20,7 +20,7 @@ public class GameView {
     private Pane root;
     Snake snake;
 
-    private int gameSpeedMillis = 10;
+    private int gameSpeedMillis = 500;
 
     public GameView() {
         Stage stage = new Stage();
@@ -32,7 +32,7 @@ public class GameView {
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(5.0);
         snake = new Snake();
-        initialiseGameArea();
+        //initialiseGameArea();
         setRootListeners();
 
 
@@ -50,7 +50,8 @@ public class GameView {
 
                         //The food instance variable may not be less then zero
                         processInput();
-
+                        update();
+                        render();
                     }
                 }));
         tl.play();
@@ -60,18 +61,28 @@ public class GameView {
     {
         root.widthProperty().addListener((obs, oldVal, newVal) -> {
             canvas.setWidth(newVal.doubleValue());
-            initialiseGameArea();
+            //initialiseGameArea();
         });
         root.heightProperty().addListener((obs, oldVal, newVal) -> {
             canvas.setHeight(newVal.doubleValue());
-            initialiseGameArea();
+            //initialiseGameArea();
         });
     }
 
     private void processInput()
     {
+
+    }
+
+    private void update()
+    {
+        snake.move();
+    }
+
+    private void render()
+    {
         clearGameArea();
-        gc.fillRect(snake.move(), snake.getHeadY(), 10, 10);
+        gc.fillRect(snake.getHeadX(), snake.getHeadY(), 10, 10);
     }
 
     private void clearGameArea()
@@ -83,13 +94,12 @@ public class GameView {
     }
 
 
-
-    private void initialiseGameArea() {
-        double width = canvas.getWidth();
-        double height = canvas.getHeight();
-
-        gc.clearRect(0, 0, width, height);
-        gc.strokeRect(10, 10, width - 20, height - 20);
-        gc.fillRect(snake.getHeadX(),snake.getHeadY(),10,10);
-    }
+//    private void initialiseGameArea() {
+//        double width = canvas.getWidth();
+//        double height = canvas.getHeight();
+//
+//        gc.clearRect(0, 0, width, height);
+//        gc.strokeRect(10, 10, width - 20, height - 20);
+//        gc.fillRect(snake.getHeadX(),snake.getHeadY(),10,10);
+//    }
 }

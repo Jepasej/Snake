@@ -1,5 +1,8 @@
 package SnakeGame.Model;
 
+import SnakeGame.Model.SnakeStates.DirectionState;
+import SnakeGame.Model.SnakeStates.FacingRight;
+
 public class SnakeHead extends Segment
 {
     private final int STARTING_X = 50;
@@ -9,32 +12,36 @@ public class SnakeHead extends Segment
     private int lastX;
     private int lastY;
 
+    private DirectionState direction;
+    private int movementIncrements;
+
     public SnakeHead()
     {
-        super.setX(STARTING_X);
-        super.setY(STARTING_Y);
+        setX(STARTING_X);
+        setY(STARTING_Y);
 
-        lastX = STARTING_X;
-        lastY = STARTING_Y;
+        movementIncrements = STARTING_MOVE_INCREMENTS;
+
+        setCoordinates(new int[]{STARTING_X, STARTING_Y});
+
+        direction = new FacingRight();
     }
 
-    public int getLastX()
+    public void updateCoordinates()
     {
-        return lastX;
+        updateX();
+        updateY();
     }
 
-    public void updateLastX()
+    private void updateX()
     {
-        lastX += STARTING_MOVE_INCREMENTS;
+        lastX = getX();
+        setX( direction.updateX( lastX, movementIncrements ) );
     }
 
-    public int getLastY()
+    private void updateY()
     {
-        return lastY;
-    }
-
-    public void updateLastY()
-    {
-        lastY += STARTING_MOVE_INCREMENTS;
+        lastY = getY();
+        setY( direction.updateY( lastY, movementIncrements ) );
     }
 }
