@@ -250,4 +250,41 @@ public class GameController
             }
         }
     }
+//
+//    //AI's simplified version of the above:
+//    private void createGameAreaBorderWithAI() {
+//        Wall sampleWall = new Wall();
+//        int wallSize = sampleWall.getSize();
+//
+//        if (gameAreaBorder == null) {
+//            gameAreaBorder = new ArrayList<>();
+//        } else {
+//            gameAreaBorder.clear();
+//        }
+//
+//        // Define border parameters: [startX, startY, isHorizontal, length]
+//        int[][] borderParams = {
+//                {gameAreaStartX, gameAreaStartY, 1, gameAreaWidth / wallSize},             // Top border
+//                {gameAreaStartX, gameAreaHeight - wallSize - scoreAreaHeight, 1, gameAreaWidth / wallSize}, // Bottom border
+//                {gameAreaStartX, gameAreaStartY, 0, gameAreaHeight / wallSize},            // Left border
+//                {gameAreaWidth - wallSize, gameAreaStartY, 0, gameAreaHeight / wallSize}   // Right border
+//        };
+//
+//        for (int[] params : borderParams) {
+//            int startX = params[0];
+//            int startY = params[1];
+//            boolean isHorizontal = params[2] == 1;
+//            int length = params[3];
+//
+//            for (int i = 0; i < length; i++) {
+//                Wall wall = new Wall(startX, startY);
+//                gameAreaBorder.add(wall);
+//                if (isHorizontal) {
+//                    startX += wallSize;
+//                } else {
+//                    startY += wallSize;
+//                }
+//            }
+//        }
+//    }
 }
