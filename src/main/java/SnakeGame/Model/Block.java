@@ -1,18 +1,23 @@
 package SnakeGame.Model;
 
-public class Block
+import java.util.Arrays;
+
+public class Block implements Comparable<Block>
 {
     private final int SIZE = 10;
     private int[] coordinates = new int[2];
 
-    public int[] getCoordinates()
+    @Override
+    public int compareTo(Block o)
     {
-        return coordinates;
-    }
-
-    public void setCoordinates(int[] coordinates)
-    {
-        this.coordinates = coordinates;
+        if(Arrays.equals(this.coordinates, o.coordinates))
+        {
+            return 0;
+        }
+        else
+        {
+            return 1;
+        }
     }
 
     protected int getX()
@@ -35,8 +40,10 @@ public class Block
         this.coordinates[1] = y;
     }
 
-    public int getSIZE()
+    protected int getSIZE()
     {
         return SIZE;
     }
+
+
 }

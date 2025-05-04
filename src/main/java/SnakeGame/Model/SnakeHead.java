@@ -23,7 +23,8 @@ public class SnakeHead extends Block
 
         movementIncrements = STARTING_MOVE_INCREMENTS;
 
-        setCoordinates(new int[]{STARTING_X, STARTING_Y});
+        setX(STARTING_X);
+        setY(STARTING_Y);
 
         direction = new FacingRight();
     }

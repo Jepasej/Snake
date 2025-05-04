@@ -1,5 +1,7 @@
 package SnakeGame.Controller;
 
+import SnakeGame.Model.CollisionChecker;
+import SnakeGame.Model.Food;
 import SnakeGame.Model.Snake;
 import SnakeGame.View.GameView;
 import javafx.animation.KeyFrame;
@@ -14,19 +16,34 @@ import java.util.Arrays;
 public class GameController
 {
     private GameView gameView;
+    private int gameAreaWidth;
+    private int gameAreaHeight;
     private Snake snake;
+    Food food;
+    CollisionChecker collisionChecker;
     private int gameSpeedMillis;
     Timeline timeline;
     KeyCode keyCode;
     KeyCode[] acceptedInputs = {KeyCode.UP, KeyCode.DOWN, KeyCode.LEFT, KeyCode.RIGHT};
 
+    //region flags
+    private boolean gameOver;
+    private boolean foodReached;
+    //endregion
+
     public GameController()
     {
         gameView = new GameView();
+        gameAreaWidth = (int) gameView.getCanvas().getWidth();
+        gameAreaHeight = (int) gameView.getCanvas().getHeight();
 
         snake = new Snake();
 
-        gameSpeedMillis = 250;
+        setFood();
+
+        collisionChecker = new CollisionChecker();
+
+        gameSpeedMillis = 80;
 
         setRootListeners();
 
@@ -47,9 +64,13 @@ public class GameController
     {
         gameView.getRoot().widthProperty().addListener((obs, oldVal, newVal) -> {
             gameView.getCanvas().setWidth(newVal.doubleValue());
+
+            gameAreaWidth = (int) gameView.getCanvas().getWidth();
         });
         gameView.getRoot().heightProperty().addListener((obs, oldVal, newVal) -> {
             gameView.getCanvas().setHeight(newVal.doubleValue());
+
+            gameAreaHeight = (int) gameView.getCanvas().getHeight();
         });
     }
 
@@ -71,11 +92,9 @@ public class GameController
                     @Override
                     public void handle(ActionEvent event)
                     {
-
-                        //The food instance variable may not be less then zero
                         processInput();
                         update();
-                        gameView.render(snake);
+                        gameView.render(snake, food);
                     }
                 }));
         timeline.play();
@@ -92,6 +111,42 @@ public class GameController
 
     private void update()
     {
-        snake.move();
+        checkCollisions();
+
+        checkGameState();
+
+        if(foodReached)
+        {
+            eatFood();
+        }
+
+        if(!gameOver)
+        {
+            snake.move();
+        }
+    }
+
+    private void eatFood()
+    {
+        snake.grow();
+        setFood();
+    }
+
+    private void setFood()
+    {
+        food = new Food(gameAreaWidth, gameAreaHeight);
+    }
+
+    private void checkGameState()
+    {
+        if(gameOver)
+            timeline.stop();
+    }
+
+    private void checkCollisions()
+    {
+        gameOver = collisionChecker.checkSnakeCollision(snake, gameView.getCanvas());
+        foodReached = collisionChecker.checkFoodCollision(snake, food);
+
     }
 }

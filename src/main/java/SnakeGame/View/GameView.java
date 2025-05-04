@@ -1,5 +1,6 @@
 package SnakeGame.View;
 
+import SnakeGame.Model.Food;
 import SnakeGame.Model.Snake;
 import SnakeGame.Model.SnakeBody;
 import javafx.scene.Scene;
@@ -26,7 +27,7 @@ public class GameView {
     {
         root = new Pane();
         stage = new Stage();
-        scene = new Scene(root, 800, 600);
+        scene = new Scene(root, 300, 300);
         canvas = new Canvas(root.getWidth(), root.getHeight());
         root.getChildren().add(canvas);
         gc = canvas.getGraphicsContext2D();
@@ -37,7 +38,7 @@ public class GameView {
 
 
     }
-    public void render(Snake snake)
+    public void render(Snake snake, Food food)
     {
         clearGameArea();
         //Draws Snake's head
@@ -47,6 +48,8 @@ public class GameView {
         {
             gc.fillRect(snake.getBodyX(i), snake.getBodyY(i), snake.getBodySize(), snake.getBodySize());
         }
+        //Draws food
+        gc.fillRect(food.getFoodX(), food.getFoodY(), food.getSize(), food.getSize());
     }
 
     private void clearGameArea()

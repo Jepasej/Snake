@@ -10,14 +10,17 @@ public class Snake
     SnakeHead head;
     List<SnakeBody> body;
 
+    private int tempX;
+    private int tempY;
+
     public Snake()
     {
         head = new SnakeHead();
         body = new ArrayList<>();
-        for(int i = 0; i < 12; i++)
-        {
-            body.add(new SnakeBody(getHeadX() - getHeadSize()*i, getHeadY()));
-        }
+        //for(int i = 0; i < 12; i++)
+        //{
+            body.add(new SnakeBody(getHeadX() - getHeadSize(), getHeadY()));
+        //}
     }
 
     public void handleInput(KeyCode keyCode)
@@ -27,8 +30,8 @@ public class Snake
 
     public void move()
     {
-        int tempX = getHeadX();
-        int tempY = getHeadY();
+        tempX = getHeadX();
+        tempY = getHeadY();
         head.updateCoordinates();
 
         for (SnakeBody body : body)
@@ -41,6 +44,12 @@ public class Snake
         }
     }
 
+    public void grow()
+    {
+        body.add(new SnakeBody(tempX, tempY));
+    }
+
+    //region getters&setters
     public int getHeadX()
     {
         return head.getX();
@@ -73,6 +82,17 @@ public class Snake
 
     public int getBodySize()
     {
-        return body.get(0).getSIZE();
+        return body.getFirst().getSIZE();
     }
+
+    public SnakeHead getHead()
+    {
+        return head;
+    }
+
+    public List<SnakeBody> getBody()
+    {
+        return body;
+    }
+    //endregion
 }
