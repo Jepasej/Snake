@@ -2,12 +2,14 @@ package SnakeGame.View;
 
 import SnakeGame.Model.Food;
 import SnakeGame.Model.Snake;
-import SnakeGame.Model.SnakeBody;
+import SnakeGame.Model.Wall;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
 import javafx.scene.layout.Pane;
+
+import java.util.List;
 
 public class GameView {
 
@@ -16,6 +18,8 @@ public class GameView {
     private Pane root;
     private Stage stage;
     private Scene scene;
+    private int wallWidth = 10;
+    private int scoreAreaHeight = 80;
 
     public GameView()
     {
@@ -27,13 +31,21 @@ public class GameView {
     {
         root = new Pane();
         stage = new Stage();
-        scene = new Scene(root, 300, 300);
+        scene = new Scene(root, 800, 800);
         canvas = new Canvas(root.getWidth(), root.getHeight());
         root.getChildren().add(canvas);
         gc = canvas.getGraphicsContext2D();
         stage.setTitle("sssssssssssssnaaake gaaame!");
         stage.setScene(scene);
         stage.show();
+    }
+
+    public void drawGameArea(List<Wall> gameAreaBorder)
+    {
+        for (Wall wall : gameAreaBorder)
+        {
+            gc.fillRect(wall.getWallX(), wall.getWallY(), wall.getSize(), wall.getSize());
+        }
     }
 
     public void render(Snake snake, Food food)
@@ -52,10 +64,10 @@ public class GameView {
 
     private void clearGameArea()
     {
-        double gameAreaWidth = canvas.getWidth();
-        double gameAreaHeight = canvas.getHeight();
+        double gameAreaWidth = canvas.getWidth()-(wallWidth*2);
+        double gameAreaHeight = canvas.getHeight()-(wallWidth*2)-scoreAreaHeight;
 
-        gc.clearRect(0, 0, gameAreaWidth, gameAreaHeight);
+        gc.clearRect(wallWidth, wallWidth, gameAreaWidth, gameAreaHeight);
     }
 
     //region Getters&Setters

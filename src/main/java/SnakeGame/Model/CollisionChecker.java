@@ -2,6 +2,8 @@ package SnakeGame.Model;
 
 import javafx.scene.canvas.Canvas;
 
+import java.util.List;
+
 public class CollisionChecker
 {
     private final int same = 0;
@@ -12,18 +14,15 @@ public class CollisionChecker
      * @param gameArea current size of gamearea
      * @return collision status of snake
      */
-    public boolean checkSnakeCollision(Snake snake, Canvas gameArea)
+    public boolean checkSnakeCollision(Snake snake, List<Wall> gameArea)
     {
-        //checks canvas bounds for X
-        if(snake.getHeadX()>=gameArea.getWidth()||snake.getHeadX()<0)
+        //checks wall for collision
+        for (Wall wall : gameArea)
         {
-            return true;
-        }
-
-        //checks canvas bounds for Y
-        if(snake.getHeadY()>=gameArea.getHeight()||snake.getHeadY()<0)
-        {
-            return true;
+            if(snake.getHead().compareTo(wall) == same)
+            {
+                return true;
+            }
         }
 
         //checks body for collision

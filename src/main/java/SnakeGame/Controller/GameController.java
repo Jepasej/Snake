@@ -3,6 +3,7 @@ package SnakeGame.Controller;
 import SnakeGame.Model.CollisionChecker;
 import SnakeGame.Model.Food;
 import SnakeGame.Model.Snake;
+import SnakeGame.Model.Wall;
 import SnakeGame.View.GameView;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -11,13 +12,19 @@ import javafx.event.EventHandler;
 import javafx.scene.input.KeyCode;
 import javafx.util.Duration;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class GameController
 {
+    private final int NUMBER_OF_WALLS = 4;
     private GameView gameView;
+    private int gameAreaStartX = 0;
+    private int gameAreaStartY = 0;
     private int gameAreaWidth;
     private int gameAreaHeight;
+    private List<Wall> gameAreaBorder;
     private Snake snake;
     Food food;
     CollisionChecker collisionChecker;
@@ -25,6 +32,9 @@ public class GameController
     Timeline timeline;
     KeyCode keyCode;
     KeyCode[] acceptedInputs = {KeyCode.UP, KeyCode.DOWN, KeyCode.LEFT, KeyCode.RIGHT};
+
+
+    private int scoreAreaHeight = 80;
 
     //region flags
     private boolean gameOver;
@@ -37,15 +47,19 @@ public class GameController
         gameAreaWidth = (int) gameView.getCanvas().getWidth();
         gameAreaHeight = (int) gameView.getCanvas().getHeight();
 
+        createGameAreaBorder();
+
         snake = new Snake();
 
         setFood();
 
         collisionChecker = new CollisionChecker();
 
-        gameSpeedMillis = 80;
+        gameSpeedMillis = 500;
 
         setRootListeners();
+
+        gameView.drawGameArea(gameAreaBorder);
 
         runGame();
     }
@@ -63,11 +77,19 @@ public class GameController
             gameView.getCanvas().setWidth(newVal.doubleValue());
 
             gameAreaWidth = (int) gameView.getCanvas().getWidth();
+
+            createGameAreaBorder();
+
+            gameView.drawGameArea(gameAreaBorder);
         });
         gameView.getRoot().heightProperty().addListener((obs, oldVal, newVal) -> {
             gameView.getCanvas().setHeight(newVal.doubleValue());
 
             gameAreaHeight = (int) gameView.getCanvas().getHeight();
+
+            createGameAreaBorder();
+
+            gameView.drawGameArea(gameAreaBorder);
         });
     }
 
@@ -142,8 +164,90 @@ public class GameController
 
     private void checkCollisions()
     {
-        gameOver = collisionChecker.checkSnakeCollision(snake, gameView.getCanvas());
+        gameOver = collisionChecker.checkSnakeCollision(snake, gameAreaBorder);
         foodReached = collisionChecker.checkFoodCollision(snake, food);
 
+    }
+
+    private void createGameAreaBorder()
+    {
+
+        Wall sampleWall = new Wall();
+        int wallSize = sampleWall.getSize();
+
+        if(gameAreaBorder == null)
+        {
+            gameAreaBorder = new ArrayList<>();
+        }
+        else if(!gameAreaBorder.isEmpty())
+        {
+            gameAreaBorder.clear();
+        }
+
+        for(int i = 0; i < NUMBER_OF_WALLS; i++)
+        {
+            //top border
+            if(i == 0)
+            {
+                int lastWallX = gameAreaStartX;
+                int lastWallY = gameAreaStartY;
+
+                //10 is block size
+                for(int j = 0; j < ((gameAreaWidth/wallSize)); j++)
+                {
+                    Wall wall = new Wall(lastWallX,lastWallY);
+                    lastWallX += wall.getSize();
+                    gameAreaBorder.add(wall);
+                }
+            }
+
+            //bottom border
+            if(i == 1)
+            {
+                int lastWallX = gameAreaStartX;
+                int lastWallY = gameAreaHeight-wallSize-scoreAreaHeight;
+
+                //10 is block size
+                for(int j = 0; j < ((gameAreaWidth/wallSize)); j++)
+                {
+                    Wall wall = new Wall(lastWallX,lastWallY);
+                    lastWallX += wall.getSize();
+                    gameAreaBorder.add(wall);
+                }
+
+            }
+
+            //left border
+            if(i == 2)
+            {
+
+                int lastWallX = gameAreaStartX;
+                int lastWallY = gameAreaStartY;
+
+                //10 is block size
+                for(int j = 0; j < ((gameAreaHeight/wallSize)); j++)
+                {
+                    Wall wall = new Wall(lastWallX,lastWallY);
+                    lastWallY += wall.getSize();
+                    gameAreaBorder.add(wall);
+                }
+            }
+
+            //right border
+            if(i == 3)
+            {
+                int lastWallX = gameAreaWidth-wallSize;
+                int lastWallY = gameAreaStartY;
+
+                //10 is block size
+                for(int j = 0; j < ((gameAreaHeight/wallSize)); j++)
+                {
+                    Wall wall = new Wall(lastWallX,lastWallY);
+                    lastWallY += wall.getSize();
+                    gameAreaBorder.add(wall);
+                }
+
+            }
+        }
     }
 }
