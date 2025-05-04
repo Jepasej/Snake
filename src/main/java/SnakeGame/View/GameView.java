@@ -17,8 +17,8 @@ public class GameView {
     private Stage stage;
     private Scene scene;
 
-    public GameView() {
-
+    public GameView()
+    {
         initialise();
         gc.fillRect(50,50,10,10);
     }
@@ -34,10 +34,8 @@ public class GameView {
         stage.setTitle("sssssssssssssnaaake gaaame!");
         stage.setScene(scene);
         stage.show();
-
-
-
     }
+
     public void render(Snake snake, Food food)
     {
         clearGameArea();
@@ -59,16 +57,6 @@ public class GameView {
 
         gc.clearRect(0, 0, gameAreaWidth, gameAreaHeight);
     }
-
-
-//    private void initialiseGameArea() {
-//        double width = canvas.getWidth();
-//        double height = canvas.getHeadSize();
-//
-//        gc.clearRect(0, 0, width, height);
-//        gc.strokeRect(10, 10, width - 20, height - 20);
-//        gc.fillRect(snake.getHeadX(),snake.getHeadY(),10,10);
-//    }
 
     //region Getters&Setters
     public Pane getRoot()

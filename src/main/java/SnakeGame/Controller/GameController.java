@@ -47,9 +47,6 @@ public class GameController
 
         setRootListeners();
 
-        //replace and delete later: - didnt work
-        //gameView.getGc().fillRect(50,50,10,10);
-
         runGame();
     }
 
