@@ -4,7 +4,7 @@ import javafx.scene.canvas.Canvas;
 
 public class CollisionChecker
 {
-    private int same = 0;
+    private final int same = 0;
 
     /**
      * checks coordinates of SnakeHead against Snake' body and game area size.
