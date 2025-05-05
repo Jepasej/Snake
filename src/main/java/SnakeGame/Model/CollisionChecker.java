@@ -36,6 +36,11 @@ public class CollisionChecker
         return false;
     }
 
+    public boolean checkCollision(Block b1, Block b2)
+    {
+        return b1.compareTo(b2) == same;
+    }
+
     /**
      * checks coordinates of SnakeHead against Food
      * @param snake model representing gamesnake

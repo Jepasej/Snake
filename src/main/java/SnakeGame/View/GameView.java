@@ -20,6 +20,8 @@ public class GameView {
     private Scene scene;
     private int wallWidth = 10;
     private int scoreAreaHeight = 80;
+    double gameAreaWidth;
+    double gameAreaHeight;
 
     public GameView()
     {
@@ -31,7 +33,7 @@ public class GameView {
     {
         root = new Pane();
         stage = new Stage();
-        scene = new Scene(root, 800, 800);
+        scene = new Scene(root, 500, 400);
         canvas = new Canvas(root.getWidth(), root.getHeight());
         root.getChildren().add(canvas);
         gc = canvas.getGraphicsContext2D();
@@ -40,17 +42,30 @@ public class GameView {
         stage.show();
     }
 
-    public void drawGameArea(List<Wall> gameAreaBorder)
+    public void initialiseGameArea(List<Wall> gameAreaBorder, int score)
     {
         for (Wall wall : gameAreaBorder)
         {
             gc.fillRect(wall.getWallX(), wall.getWallY(), wall.getSize(), wall.getSize());
         }
+
+        drawScore(score);
+
+        setGameArea();
     }
 
-    public void render(Snake snake, Food food)
+    private void drawScore(int score)
+    {
+        //FIX
+        gc.fillText("Score: " + score, 450, 350);
+    }
+
+    public void render(Snake snake, Food food, int score)
     {
         clearGameArea();
+        clearScoreArea();
+        //Draws score
+        drawScore(score);
         //Draws Snake's head
         gc.fillRect(snake.getHeadX(), snake.getHeadY(), snake.getHeadSize(), snake.getHeadSize());
         //Draws Snake's body
@@ -62,15 +77,29 @@ public class GameView {
         gc.fillRect(food.getFoodX(), food.getFoodY(), food.getSize(), food.getSize());
     }
 
+    private void clearScoreArea()
+    {
+        //FIX
+        gc.clearRect(425,325,75,75);
+    }
+
     private void clearGameArea()
     {
-        double gameAreaWidth = canvas.getWidth()-(wallWidth*2);
-        double gameAreaHeight = canvas.getHeight()-(wallWidth*2)-scoreAreaHeight;
-
         gc.clearRect(wallWidth, wallWidth, gameAreaWidth, gameAreaHeight);
     }
 
     //region Getters&Setters
+    public void setGameArea()
+    {
+        gameAreaWidth = canvas.getWidth()-(wallWidth*2);
+        gameAreaHeight = canvas.getHeight()-(wallWidth*2)-scoreAreaHeight;
+    }
+
+    public int getScoreAreaHeight()
+    {
+        return scoreAreaHeight;
+    }
+
     public Pane getRoot()
     {
         return root;
