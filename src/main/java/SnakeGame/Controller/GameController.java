@@ -13,9 +13,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Controller of the SnakeGame, handles userinput and communication between Model and View.
+ * Defines the game area and UI and relays it to the View.
+ */
 public class GameController
 {
-    private final int NUMBER_OF_WALLS = 4;
     private GameView gameView;
     private int canvasStartX = 0;
     private int canvasStartY = 0;
@@ -30,6 +33,7 @@ public class GameController
     Food food;
     CollisionChecker collisionChecker;
     Score score;
+    private final int INITIAL_GAME_SPEED_MILLIS = 100;
     private int gameSpeedMillis;
     Timeline timeline;
     KeyCode keyCode;
@@ -43,31 +47,72 @@ public class GameController
     private boolean foodReached;
     //endregion
 
+    /**
+     * Constructor of GameController, initialises instance variables and game UI
+     */
     public GameController()
     {
-        gameView = new GameView();
-        canvasWidth = (int) gameView.getCanvas().getWidth();
-        canvasHeight = (int) gameView.getCanvas().getHeight();
-        gameAreaWidth = canvasWidth;
-        gameAreaHeight = canvasHeight-scoreAreaHeight;
+        setupGameView();
 
         createGameAreaBorder();
 
-        snake = new Snake();
+        createSnake();
 
-        collisionChecker = new CollisionChecker();
+        createCollisionChecker();
 
-        setFood();
+        newFood();
 
-        gameSpeedMillis = 80;
+        setGameSpeed(INITIAL_GAME_SPEED_MILLIS);
 
         setRootListeners();
 
-        score = new Score();
+        setupScore();
 
-        gameView.initialiseGameArea(gameAreaBorder, score.getScore());
+        initialiseGameArea();
 
         runGame();
+    }
+
+    private void initialiseGameArea()
+    {
+        gameView.initialiseGameArea(gameAreaBorder, score.getScore());
+    }
+
+    private void setupScore()
+    {
+        score = new Score();
+    }
+
+    private void setGameSpeed(int gameSpeed)
+    {
+        if(gameSpeed == 0)
+        {
+            gameSpeedMillis = gameSpeed;
+        }
+        else {
+            gameSpeedMillis -= gameSpeed;
+        };
+    }
+
+    private void createCollisionChecker()
+    {
+        collisionChecker = new CollisionChecker();
+    }
+
+    private void createSnake()
+    {
+        snake = new Snake();
+    }
+
+    /**
+     * Initialises the GameView and related variables for use in the controller.
+     */
+    private void setupGameView()
+    {
+        gameView = new GameView();
+        setCanvasWidth();
+        setCanvasHeight();
+        setGameArea();
     }
 
     private void setRootListeners()
@@ -75,35 +120,6 @@ public class GameController
         setResizingListeners();
 
         setKeyPressListeners();
-    }
-
-    private void setResizingListeners()
-    {
-        gameView.getRoot().widthProperty().addListener((obs, oldVal, newVal) -> {
-            gameView.getCanvas().setWidth(newVal.doubleValue());
-
-            canvasWidth = (int) gameView.getCanvas().getWidth();
-
-            createGameAreaBorder();
-
-            gameView.initialiseGameArea(gameAreaBorder, score.getScore());
-        });
-        gameView.getRoot().heightProperty().addListener((obs, oldVal, newVal) -> {
-            gameView.getCanvas().setHeight(newVal.doubleValue());
-
-            canvasHeight = (int) gameView.getCanvas().getHeight();
-
-            createGameAreaBorder();
-
-            gameView.initialiseGameArea(gameAreaBorder, score.getScore());
-        });
-    }
-
-    private void setKeyPressListeners()
-    {
-        gameView.getScene().setOnKeyPressed((event) -> {
-            keyCode = event.getCode();
-        });
     }
 
     public void runGame()
@@ -154,11 +170,16 @@ public class GameController
 
     private void eatFood()
     {
-        snake.grow();
-        setFood();
+        growSnake();
+        newFood();
     }
 
-    private void setFood()
+    private void growSnake()
+    {
+        snake.grow();
+    }
+
+    private void newFood()
     {
         boolean collision = true;
         while(collision)
@@ -170,9 +191,6 @@ public class GameController
 
     private boolean checkFoodPlacement()
     {
-//        if(food.getFoodY()>gameAreaHeight- gameView.getScoreAreaHeight())
-//            return true;
-
         if(collisionChecker.checkCollision(food, snake.getHead()))
             return true;
 
@@ -182,11 +200,6 @@ public class GameController
                 return true;
         }
 
-//        for(Wall wall: gameAreaBorder)
-//        {
-//            if(collisionChecker.checkCollision(food, wall))
-//                return true;
-//        }
         return false;
     }
 
@@ -203,8 +216,8 @@ public class GameController
 
     private void checkCollisions()
     {
-        gameOver = collisionChecker.checkSnakeCollision(snake, gameAreaBorder);
-        foodReached = collisionChecker.checkFoodCollision(snake, food);
+        setGameOver();
+        setFoodReached();
 
     }
 
@@ -213,6 +226,7 @@ public class GameController
 
         Wall sampleWall = new Wall();
         int wallSize = sampleWall.getSize();
+        int numberOfWalls = 4;
 
         if(gameAreaBorder == null)
         {
@@ -223,7 +237,7 @@ public class GameController
             gameAreaBorder.clear();
         }
 
-        for(int i = 0; i < NUMBER_OF_WALLS; i++)
+        for(int i = 0; i < numberOfWalls; i++)
         {
             //top border
             if(i == 0)
@@ -342,4 +356,67 @@ public class GameController
 //            }
 //        }
 //    }
+
+    //region setters
+
+    private void setGameArea()
+    {
+        gameAreaWidth = canvasWidth;
+        gameAreaHeight = canvasHeight-scoreAreaHeight;
+    }
+
+    private void setCanvasHeight()
+    {
+        canvasHeight = (int) gameView.getCanvas().getHeight();
+    }
+
+    private void setCanvasWidth()
+    {
+        canvasWidth = (int) gameView.getCanvas().getWidth();
+    }
+
+    private void setResizingListeners()
+    {
+        gameView.getRoot().widthProperty().addListener((obs, oldVal, newVal) -> {
+            gameView.getCanvas().setWidth(newVal.doubleValue());
+
+            setCanvasWidth();
+
+            createGameAreaBorder();
+
+            initialiseGameArea();
+        });
+        gameView.getRoot().heightProperty().addListener((obs, oldVal, newVal) -> {
+            gameView.getCanvas().setHeight(newVal.doubleValue());
+
+            setCanvasHeight();
+
+            createGameAreaBorder();
+
+            initialiseGameArea();
+        });
+    }
+
+    private void setKeyPressListeners()
+    {
+        gameView.getScene().setOnKeyPressed((event) -> {
+            keyCode = event.getCode();
+        });
+    }
+
+    private void setFoodReached()
+    {
+        foodReached = collisionChecker.checkFoodCollision(snake, food);
+    }
+
+    private void setGameOver()
+    {
+        gameOver = collisionChecker.checkSnakeCollision(snake, gameAreaBorder);
+    }
+
+    //endregion
+
+    //region getters
+
+    //endregion
 }

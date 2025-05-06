@@ -57,7 +57,7 @@ public class GameView {
     private void drawScore(int score)
     {
         //FIX
-        gc.fillText("Score: " + score, 450, 350);
+        gc.fillText("Score: " + score, canvas.getWidth()*0.75, canvas.getHeight()-wallWidth-(scoreAreaHeight/2));
     }
 
     public void render(Snake snake, Food food, int score)
@@ -80,7 +80,7 @@ public class GameView {
     private void clearScoreArea()
     {
         //FIX
-        gc.clearRect(425,325,75,75);
+        gc.clearRect(canvas.getWidth()*0.75, canvas.getHeight()-scoreAreaHeight,scoreAreaHeight,scoreAreaHeight-wallWidth);
     }
 
     private void clearGameArea()

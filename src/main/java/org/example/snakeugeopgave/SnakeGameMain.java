@@ -15,7 +15,6 @@ public class SnakeGameMain extends Application
     public void start(Stage stage) throws IOException
     {
         GameController gameController = new GameController();
-//        GameView gameView = new GameView();
     }
 
     public static void main(String[] args)
