@@ -31,15 +31,15 @@ public class GameController
     private List<Wall> gameAreaBorder;
     private PlayerObject playerObject;
     private Food food;
-    private final int FOOD_RESET_TIME_MILLIS = 8000;
-    private final int SPEEDY_RESET_TIME_MILLIS = 4000;
-    private final int SUPER_RESET_TIME_MILLIS = 8000;
+    private final int FOOD_RESET_TIME_MILLIS = 8000*2;
+    private final int SPEEDY_RESET_TIME_MILLIS = 4000*2;
+    private final int SUPER_RESET_TIME_MILLIS = 8000*2;
     private CollisionChecker collisionChecker;
     private StopWatch foodStopWatch = new StopWatch();
     private StopWatch speedyStopWatch = new StopWatch();
     private StopWatch superStopWatch = new StopWatch();
     private Score score;
-    private final int INITIAL_GAME_SPEED_MILLIS = 100;
+    private final int INITIAL_GAME_SPEED_MILLIS = 200;
     private final int GAME_SPEED_DECREMENT = 2;
     private final int SPEEDY_DECREMENT = 40;
     private int gameSpeedMillis = 0;
@@ -157,7 +157,16 @@ public class GameController
 
     private void render()
     {
-        gameView.render(playerObject, food, getScore());
+        if(playerObject.getHead() instanceof SnakeHeadSuper)
+        {
+            SnakeHeadSuper head = (SnakeHeadSuper) playerObject.getHead();
+            head.setSuperHead();
+            gameView.render(playerObject,food, getScore(), head.getSuperHead());
+        }
+        else
+        {
+            gameView.render(playerObject, food, getScore());
+        }
     }
 
     private void processInput()
@@ -219,7 +228,6 @@ public class GameController
             eatFood();
             increaseScore();
             updateGameSpeed(GAME_SPEED_DECREMENT);
-            foodReached = false;
         }
         else
         {
@@ -254,6 +262,7 @@ public class GameController
         growSnake();
         activatePowerup();
         newFood();
+        foodReached = false;
     }
 
     private void activatePowerup()
@@ -262,7 +271,11 @@ public class GameController
         {
             case NORMAL: break;
 
-            case SUPER: playerObject.changeHead();
+            case SUPER: if(playerObject.getHead() instanceof SnakeHeadSuper)
+                        {
+                            break;
+                        }
+                        playerObject.changeHead();
                         superStopWatch.start();
                         break;
 
@@ -328,7 +341,6 @@ public class GameController
     {
         setGameOver();
         setFoodReached();
-
     }
 
     private void createGameAreaBorder()
@@ -529,7 +541,9 @@ public class GameController
         }
         else if(isSuper)
         {
-            for(Block superHead: playerObject.getHead().superHead)
+            SnakeHeadSuper head = (SnakeHeadSuper) playerObject.getHead();
+            head.setSuperHead();
+            for(Block superHead: head.getSuperHead())
             {
                 if(!foodReached)
                 {

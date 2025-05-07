@@ -13,6 +13,7 @@ public class SnakeHeadSuper extends SnakeHead
     public SnakeHeadSuper(int x, int y, DirectionState direction)
     {
         super(x, y, direction);
+
     }
 
     public void setSuperHead()

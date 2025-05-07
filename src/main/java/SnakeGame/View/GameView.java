@@ -1,13 +1,11 @@
 package SnakeGame.View;
 
-import SnakeGame.Model.Food;
-import SnakeGame.Model.PlayerObject;
-import SnakeGame.Model.Snake;
-import SnakeGame.Model.Wall;
+import SnakeGame.Model.*;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.scene.layout.Pane;
 
@@ -39,6 +37,7 @@ public class GameView {
         canvas = new Canvas(root.getWidth(), root.getHeight());
         root.getChildren().add(canvas);
         gc = canvas.getGraphicsContext2D();
+        gc.setFont(new Font(20));
         stage.setTitle("sssssssssssssnaaake gaaame!");
         stage.setScene(scene);
         stage.show();
@@ -72,6 +71,33 @@ public class GameView {
         for(int i = 0; i < playerObject.getHeadLength(); i++)
         {
             gc.fillRect(playerObject.getHeadX(), playerObject.getHeadY(), playerObject.getHeadSize(), playerObject.getHeadSize());
+        }
+        //Draws Snake's body
+        for (int i = 0; i < playerObject.getBodyLength(); i++)
+        {
+            gc.fillRect(playerObject.getBodyX(i), playerObject.getBodyY(i), playerObject.getBodySize(), playerObject.getBodySize());
+        }
+        //Draws food
+        switch(food.getColour())
+        {
+            case BLUE -> gc.setFill(Color.BLUE);
+            case RED -> gc.setFill(Color.RED);
+            case GREEN -> gc.setFill(Color.GREEN);
+        }
+        gc.fillRect(food.getFoodX(), food.getFoodY(), food.getSize(), food.getSize());
+        gc.setFill(Color.BLACK);
+    }
+
+    public void render(PlayerObject playerObject, Food food, int score, List<SnakeHead> superHead)
+    {
+        clearGameArea();
+        clearScoreArea();
+        //Draws score
+        drawScore(score);
+        //Draws Snake's head
+        for(int i = 0; i < playerObject.getHeadLength(); i++)
+        {
+            gc.fillRect(playerObject.getHeadX()-playerObject.getHeadSize(), playerObject.getHeadY()- playerObject.getHeadSize(), playerObject.getHeadSize()*3, playerObject.getHeadSize()*3);
         }
         //Draws Snake's body
         for (int i = 0; i < playerObject.getBodyLength(); i++)

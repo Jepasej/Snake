@@ -1,7 +1,5 @@
 package SnakeGame.Model;
 
-import java.util.List;
-
 public class CollisionChecker
 {
     private final int same = 0;

@@ -40,6 +40,7 @@ public class SnakeHead extends Block
         setX(x);
         setY(y);
         this.direction = direction;
+        movementIncrements = STARTING_MOVE_INCREMENTS;
     }
 
     public void changeFacing(KeyCode code)

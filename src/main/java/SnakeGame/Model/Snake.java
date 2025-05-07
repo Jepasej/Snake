@@ -32,6 +32,11 @@ public class Snake implements PlayerObject
         tempY = getHeadY();
         head.updateCoordinates();
 
+        if(head instanceof SnakeHeadSuper)
+        {
+            ((SnakeHeadSuper) head).setSuperHead();
+        }
+
         for (SnakeBody body : body)
         {
             int x = body.getX();
@@ -52,13 +57,13 @@ public class Snake implements PlayerObject
         int x = getHeadX();
         int y = getHeadY();
 
-        if (head instanceof SnakeHead)
+        if (head instanceof SnakeHeadSuper)
         {
-            head = new SnakeHeadSuper(x, y, head.getDirection());
+            head = new SnakeHead(x,y, head.getDirection());
         }
         else
         {
-            head = new SnakeHead(x,y, head.getDirection());
+            head = new SnakeHeadSuper(x, y, head.getDirection());
 
         }
     }
@@ -68,20 +73,10 @@ public class Snake implements PlayerObject
         return head.getX();
     }
 
-//    public int getHeadX(int i)
-//    {
-//        return head.get(i).getX();
-//    }
-
     public int getHeadY()
     {
         return head.getY();
     }
-
-//    public int getHeadY(int i)
-//    {
-//        return head.get(i).getY();
-//    }
 
     public int getHeadSize()
     {
@@ -121,7 +116,7 @@ public class Snake implements PlayerObject
     @Override
     public int getHeadLength()
     {
-        return 0;
+        return 1;
     }
 
     //endregion

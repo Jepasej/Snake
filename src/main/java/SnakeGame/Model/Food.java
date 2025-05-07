@@ -29,9 +29,9 @@ public class Food extends Block
     {
         int c = r.nextInt(100);
 
-        if(c<100)
+        if(c<10)
             colour = Colour.RED;
-        else if(c<50)
+        else if(c<20)
             colour = Colour.BLUE;
         else
             colour = Colour.GREEN;
