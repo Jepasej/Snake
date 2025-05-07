@@ -17,10 +17,8 @@ public class Snake implements PlayerObject
     {
         head = new SnakeHead();
         body = new ArrayList<>();
-        //for(int i = 0; i < 12; i++)
-        //{
-            body.add(new SnakeBody(getHeadX() - getHeadSize(), getHeadY()));
-        //}
+
+        body.add(new SnakeBody(getHeadX() - getHeadSize(), getHeadY()));
     }
 
     public void handleInput(KeyCode keyCode)
@@ -49,16 +47,41 @@ public class Snake implements PlayerObject
         body.add(new SnakeBody(tempX, tempY));
     }
 
+    public void changeHead()
+    {
+        int x = getHeadX();
+        int y = getHeadY();
+
+        if (head instanceof SnakeHead)
+        {
+            head = new SnakeHeadSuper(x, y, head.getDirection());
+        }
+        else
+        {
+            head = new SnakeHead(x,y, head.getDirection());
+
+        }
+    }
     //region getters&setters
     public int getHeadX()
     {
         return head.getX();
     }
 
+//    public int getHeadX(int i)
+//    {
+//        return head.get(i).getX();
+//    }
+
     public int getHeadY()
     {
         return head.getY();
     }
+
+//    public int getHeadY(int i)
+//    {
+//        return head.get(i).getY();
+//    }
 
     public int getHeadSize()
     {
@@ -94,5 +117,12 @@ public class Snake implements PlayerObject
     {
         return body;
     }
+
+    @Override
+    public int getHeadLength()
+    {
+        return 0;
+    }
+
     //endregion
 }

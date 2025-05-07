@@ -25,7 +25,11 @@ public interface PlayerObject
 
     void grow();
 
-    Block getHead();
+    SnakeHead getHead();
 
     List<SnakeBody> getBody();
+
+    int getHeadLength();
+
+    void changeHead();
 }

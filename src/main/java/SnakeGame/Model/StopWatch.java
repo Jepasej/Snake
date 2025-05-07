@@ -30,4 +30,9 @@ public class StopWatch
     {
         startTime = 0;
     }
+
+    public boolean isStarted()
+    {
+        return (startTime != 0);
+    }
 }

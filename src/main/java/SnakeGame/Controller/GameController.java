@@ -32,13 +32,18 @@ public class GameController
     private PlayerObject playerObject;
     private Food food;
     private final int FOOD_RESET_TIME_MILLIS = 8000;
+    private final int SPEEDY_RESET_TIME_MILLIS = 4000;
+    private final int SUPER_RESET_TIME_MILLIS = 8000;
     private CollisionChecker collisionChecker;
-    private StopWatch stopWatch = new StopWatch();
+    private StopWatch foodStopWatch = new StopWatch();
+    private StopWatch speedyStopWatch = new StopWatch();
+    private StopWatch superStopWatch = new StopWatch();
     private Score score;
     private final int INITIAL_GAME_SPEED_MILLIS = 100;
     private final int GAME_SPEED_DECREMENT = 2;
+    private final int SPEEDY_DECREMENT = 40;
     private int gameSpeedMillis = 0;
-    private Timeline timeline;
+    private Timeline timeline = new Timeline();
     private KeyCode keyCode;
     private KeyCode[] acceptedInputs = {KeyCode.UP, KeyCode.DOWN, KeyCode.LEFT, KeyCode.RIGHT};
     private int scoreAreaHeight = 80;
@@ -46,6 +51,7 @@ public class GameController
     //region flags
     private boolean gameOver;
     private boolean foodReached;
+    private boolean isSuper;
     //endregion
 
     /**
@@ -76,9 +82,15 @@ public class GameController
 
     private void runGame(int gameSpeed)
     {
-        timeline = new Timeline();
+        //timeline = new Timeline();
+        if(!timeline.getKeyFrames().isEmpty())
+        {
+            timeline.getKeyFrames().clear();
+        }
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.setAutoReverse(false);
+
+        System.out.println("time " + gameSpeed);
         timeline.getKeyFrames().add(new KeyFrame(Duration.millis(gameSpeed),
                 new EventHandler<ActionEvent>()
                 {
@@ -110,7 +122,7 @@ public class GameController
 
     private void updateGameSpeed(int gameSpeed)
     {
-        gameSpeedMillis -= gameSpeed;
+        gameSpeedMillis = gameSpeedMillis - gameSpeed;
         timeline.stop();
         runGame(gameSpeedMillis);
     }
@@ -166,6 +178,38 @@ public class GameController
         checkForFood();
 
         moveSnake();
+
+        if(speedyStopWatch.isStarted()||superStopWatch.isStarted())
+        {
+            checkPowerUp();
+        }
+    }
+
+    private void checkPowerUp()
+    {
+        int timer;
+
+        if(superStopWatch.isStarted())
+        {
+            timer = superStopWatch.lap();
+
+            if(timer > SUPER_RESET_TIME_MILLIS)
+            {
+                playerObject.changeHead();
+                superStopWatch.reset();
+            }
+        }
+
+        if(speedyStopWatch.isStarted())
+        {
+            timer = speedyStopWatch.lap();
+
+            if(timer > SPEEDY_RESET_TIME_MILLIS)
+            {
+                updateGameSpeed(-SPEEDY_DECREMENT);
+                speedyStopWatch.reset();
+            }
+        }
     }
 
     private void checkForFood()
@@ -175,8 +219,9 @@ public class GameController
             eatFood();
             increaseScore();
             updateGameSpeed(GAME_SPEED_DECREMENT);
+            foodReached = false;
         }
-        else if(!foodReached)
+        else
         {
             checkFoodReset();
         }
@@ -201,13 +246,30 @@ public class GameController
 
     private int checkStopWatch()
     {
-        return stopWatch.lap();
+        return foodStopWatch.lap();
     }
 
     private void eatFood()
     {
         growSnake();
+        activatePowerup();
         newFood();
+    }
+
+    private void activatePowerup()
+    {
+        switch(food.getType())
+        {
+            case NORMAL: break;
+
+            case SUPER: playerObject.changeHead();
+                        superStopWatch.start();
+                        break;
+
+            case SPEEDY: updateGameSpeed(SPEEDY_DECREMENT);
+                         speedyStopWatch.start();
+                         break;
+        }
     }
 
     private void growSnake()
@@ -229,21 +291,26 @@ public class GameController
 
     private void startStopWatch()
     {
-        stopWatch.start();
+        foodStopWatch.start();
     }
 
     private boolean checkFoodPlacement()
     {
-        if(collisionChecker.checkCollision(food, playerObject.getHead()))
+        if( collision(food, playerObject.getHead()) )
             return true;
 
         for(SnakeBody body: playerObject.getBody())
         {
-            if(collisionChecker.checkCollision(food, body))
+            if( collision(food, body))
                 return true;
         }
 
         return false;
+    }
+
+    private boolean collision(Block b1, Block b2)
+    {
+        return collisionChecker.checkCollision(b1, b2);
     }
 
     public void increaseScore()
@@ -362,6 +429,7 @@ public class GameController
             }
         }
     }
+
 //
 //    //AI's simplified version of the above:
 //    private void createGameAreaBorderWithAI() {
@@ -453,12 +521,52 @@ public class GameController
 
     private void setFoodReached()
     {
-        foodReached = collisionChecker.checkFoodCollision(playerObject, food);
+        checkHeadState();
+
+        if(!isSuper)
+        {
+            foodReached = collision(playerObject.getHead(), food);
+        }
+        else if(isSuper)
+        {
+            for(Block superHead: playerObject.getHead().superHead)
+            {
+                if(!foodReached)
+                {
+                    foodReached = collision(superHead, food);
+                }
+            }
+        }
+
+    }
+
+    private void checkHeadState()
+    {
+        isSuper = playerObject.getHead() instanceof SnakeHeadSuper;
     }
 
     private void setGameOver()
     {
-        gameOver = collisionChecker.checkSnakeCollision(playerObject, gameAreaBorder);
+        //checks wall for collision
+        for (Block wall : gameAreaBorder)
+        {
+            if(!gameOver)
+            {
+                gameOver = collision(playerObject.getHead(), wall);
+            }
+        }
+
+        if(!gameOver)
+        {
+            //checks body for collision
+            for(Block body: playerObject.getBody())
+            {
+                if(!gameOver)
+                {
+                    gameOver = collision(playerObject.getHead(), body);
+                }
+            }
+        }
     }
 
     //endregion

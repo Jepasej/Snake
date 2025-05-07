@@ -7,6 +7,7 @@ import SnakeGame.Model.Wall;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.scene.layout.Pane;
 
@@ -68,15 +69,24 @@ public class GameView {
         //Draws score
         drawScore(score);
         //Draws Snake's head
-        gc.fillRect(playerObject.getHeadX(), playerObject.getHeadY(), playerObject.getHeadSize(), playerObject.getHeadSize());
+        for(int i = 0; i < playerObject.getHeadLength(); i++)
+        {
+            gc.fillRect(playerObject.getHeadX(), playerObject.getHeadY(), playerObject.getHeadSize(), playerObject.getHeadSize());
+        }
         //Draws Snake's body
         for (int i = 0; i < playerObject.getBodyLength(); i++)
         {
             gc.fillRect(playerObject.getBodyX(i), playerObject.getBodyY(i), playerObject.getBodySize(), playerObject.getBodySize());
         }
         //Draws food
+        switch(food.getColour())
+        {
+            case BLUE -> gc.setFill(Color.BLUE);
+            case RED -> gc.setFill(Color.RED);
+            case GREEN -> gc.setFill(Color.GREEN);
+        }
         gc.fillRect(food.getFoodX(), food.getFoodY(), food.getSize(), food.getSize());
-
+        gc.setFill(Color.BLACK);
     }
 
     private void clearScoreArea()
