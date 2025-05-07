@@ -1,6 +1,7 @@
 package SnakeGame.View;
 
 import SnakeGame.Model.Food;
+import SnakeGame.Model.PlayerObject;
 import SnakeGame.Model.Snake;
 import SnakeGame.Model.Wall;
 import javafx.scene.Scene;
@@ -33,7 +34,7 @@ public class GameView {
     {
         root = new Pane();
         stage = new Stage();
-        scene = new Scene(root, 500, 400);
+        scene = new Scene(root, 400, 480);
         canvas = new Canvas(root.getWidth(), root.getHeight());
         root.getChildren().add(canvas);
         gc = canvas.getGraphicsContext2D();
@@ -60,27 +61,28 @@ public class GameView {
         gc.fillText("Score: " + score, canvas.getWidth()*0.75, canvas.getHeight()-wallWidth-(scoreAreaHeight/2));
     }
 
-    public void render(Snake snake, Food food, int score)
+    public void render(PlayerObject playerObject, Food food, int score)
     {
         clearGameArea();
         clearScoreArea();
         //Draws score
         drawScore(score);
         //Draws Snake's head
-        gc.fillRect(snake.getHeadX(), snake.getHeadY(), snake.getHeadSize(), snake.getHeadSize());
+        gc.fillRect(playerObject.getHeadX(), playerObject.getHeadY(), playerObject.getHeadSize(), playerObject.getHeadSize());
         //Draws Snake's body
-        for (int i = 0; i < snake.getBodyLength(); i++)
+        for (int i = 0; i < playerObject.getBodyLength(); i++)
         {
-            gc.fillRect(snake.getBodyX(i), snake.getBodyY(i), snake.getBodySize(), snake.getBodySize());
+            gc.fillRect(playerObject.getBodyX(i), playerObject.getBodyY(i), playerObject.getBodySize(), playerObject.getBodySize());
         }
         //Draws food
         gc.fillRect(food.getFoodX(), food.getFoodY(), food.getSize(), food.getSize());
+
     }
 
     private void clearScoreArea()
     {
         //FIX
-        gc.clearRect(canvas.getWidth()*0.75, canvas.getHeight()-scoreAreaHeight,scoreAreaHeight,scoreAreaHeight-wallWidth);
+        gc.clearRect(canvas.getWidth()*0.75, canvas.getHeight()-scoreAreaHeight,scoreAreaHeight,scoreAreaHeight-wallWidth-wallWidth);
     }
 
     private void clearGameArea()

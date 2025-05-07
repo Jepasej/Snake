@@ -29,17 +29,18 @@ public class GameController
     private int gameAreaWidth;
     private int gameAreaHeight;
     private List<Wall> gameAreaBorder;
-    private Snake snake;
-    Food food;
-    CollisionChecker collisionChecker;
-    Score score;
+    private PlayerObject playerObject;
+    private Food food;
+    private final int FOOD_RESET_TIME_MILLIS = 8000;
+    private CollisionChecker collisionChecker;
+    private StopWatch stopWatch = new StopWatch();
+    private Score score;
     private final int INITIAL_GAME_SPEED_MILLIS = 100;
-    private int gameSpeedMillis;
-    Timeline timeline;
-    KeyCode keyCode;
-    KeyCode[] acceptedInputs = {KeyCode.UP, KeyCode.DOWN, KeyCode.LEFT, KeyCode.RIGHT};
-
-
+    private final int GAME_SPEED_DECREMENT = 2;
+    private int gameSpeedMillis = 0;
+    private Timeline timeline;
+    private KeyCode keyCode;
+    private KeyCode[] acceptedInputs = {KeyCode.UP, KeyCode.DOWN, KeyCode.LEFT, KeyCode.RIGHT};
     private int scoreAreaHeight = 80;
 
     //region flags
@@ -56,7 +57,7 @@ public class GameController
 
         createGameAreaBorder();
 
-        createSnake();
+        createPlayerObject();
 
         createCollisionChecker();
 
@@ -70,12 +71,31 @@ public class GameController
 
         initialiseGameArea();
 
-        runGame();
+        runGame(gameSpeedMillis);
+    }
+
+    private void runGame(int gameSpeed)
+    {
+        timeline = new Timeline();
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.setAutoReverse(false);
+        timeline.getKeyFrames().add(new KeyFrame(Duration.millis(gameSpeed),
+                new EventHandler<ActionEvent>()
+                {
+                    @Override
+                    public void handle(ActionEvent event)
+                    {
+                        processInput();
+                        update();
+                        render();
+                    }
+                }));
+        timeline.play();
     }
 
     private void initialiseGameArea()
     {
-        gameView.initialiseGameArea(gameAreaBorder, score.getScore());
+        gameView.initialiseGameArea(gameAreaBorder, getScore());
     }
 
     private void setupScore()
@@ -85,13 +105,14 @@ public class GameController
 
     private void setGameSpeed(int gameSpeed)
     {
-        if(gameSpeed == 0)
-        {
-            gameSpeedMillis = gameSpeed;
-        }
-        else {
-            gameSpeedMillis -= gameSpeed;
-        };
+        gameSpeedMillis = gameSpeed;
+    }
+
+    private void updateGameSpeed(int gameSpeed)
+    {
+        gameSpeedMillis -= gameSpeed;
+        timeline.stop();
+        runGame(gameSpeedMillis);
     }
 
     private void createCollisionChecker()
@@ -99,9 +120,9 @@ public class GameController
         collisionChecker = new CollisionChecker();
     }
 
-    private void createSnake()
+    private void createPlayerObject()
     {
-        snake = new Snake();
+        playerObject = new Snake();
     }
 
     /**
@@ -122,30 +143,16 @@ public class GameController
         setKeyPressListeners();
     }
 
-    public void runGame()
+    private void render()
     {
-        timeline = new Timeline();
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.setAutoReverse(false);
-        timeline.getKeyFrames().add(new KeyFrame(Duration.millis(gameSpeedMillis),
-                new EventHandler<ActionEvent>()
-                {
-                    @Override
-                    public void handle(ActionEvent event)
-                    {
-                        processInput();
-                        update();
-                        gameView.render(snake, food, score.getScore());
-                    }
-                }));
-        timeline.play();
+        gameView.render(playerObject, food, getScore());
     }
 
     private void processInput()
     {
         if(Arrays.stream(acceptedInputs).toList().contains(keyCode))
         {
-            snake.handleInput(keyCode);
+            playerObject.handleInput(keyCode);
             keyCode = null;
         }
     }
@@ -156,16 +163,45 @@ public class GameController
 
         checkGameState();
 
+        checkForFood();
+
+        moveSnake();
+    }
+
+    private void checkForFood()
+    {
         if(foodReached)
         {
             eatFood();
             increaseScore();
+            updateGameSpeed(GAME_SPEED_DECREMENT);
         }
+        else if(!foodReached)
+        {
+            checkFoodReset();
+        }
+    }
 
+    private void checkFoodReset()
+    {
+        int foodCheck = checkStopWatch();
+        if(foodCheck> FOOD_RESET_TIME_MILLIS)
+        {
+            newFood();
+        }
+    }
+
+    private void moveSnake()
+    {
         if(!gameOver)
         {
-            snake.move();
+            playerObject.move();
         }
+    }
+
+    private int checkStopWatch()
+    {
+        return stopWatch.lap();
     }
 
     private void eatFood()
@@ -176,7 +212,7 @@ public class GameController
 
     private void growSnake()
     {
-        snake.grow();
+        playerObject.grow();
     }
 
     private void newFood()
@@ -187,14 +223,21 @@ public class GameController
             food = new Food(gameAreaWidth, gameAreaHeight);
             collision = checkFoodPlacement();
         }
+
+        startStopWatch();
+    }
+
+    private void startStopWatch()
+    {
+        stopWatch.start();
     }
 
     private boolean checkFoodPlacement()
     {
-        if(collisionChecker.checkCollision(food, snake.getHead()))
+        if(collisionChecker.checkCollision(food, playerObject.getHead()))
             return true;
 
-        for(SnakeBody body: snake.getBody())
+        for(SnakeBody body: playerObject.getBody())
         {
             if(collisionChecker.checkCollision(food, body))
                 return true;
@@ -382,6 +425,8 @@ public class GameController
 
             setCanvasWidth();
 
+            setGameArea();
+
             createGameAreaBorder();
 
             initialiseGameArea();
@@ -390,6 +435,8 @@ public class GameController
             gameView.getCanvas().setHeight(newVal.doubleValue());
 
             setCanvasHeight();
+
+            setGameArea();
 
             createGameAreaBorder();
 
@@ -406,17 +453,22 @@ public class GameController
 
     private void setFoodReached()
     {
-        foodReached = collisionChecker.checkFoodCollision(snake, food);
+        foodReached = collisionChecker.checkFoodCollision(playerObject, food);
     }
 
     private void setGameOver()
     {
-        gameOver = collisionChecker.checkSnakeCollision(snake, gameAreaBorder);
+        gameOver = collisionChecker.checkSnakeCollision(playerObject, gameAreaBorder);
     }
 
     //endregion
 
     //region getters
+
+    private int getScore()
+    {
+        return score.getScore();
+    }
 
     //endregion
 }

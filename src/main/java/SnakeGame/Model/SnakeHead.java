@@ -6,8 +6,7 @@ import javafx.scene.input.KeyCode;
 
 public class SnakeHead extends Block
 {
-    private final int STARTING_X = 200;
-    private final int STARTING_Y = 100;
+    private final int[] START_POSITION = {200,100};
     private final int STARTING_MOVE_INCREMENTS = 10;
 
     private int lastX;
@@ -18,13 +17,10 @@ public class SnakeHead extends Block
 
     public SnakeHead()
     {
-        setX(STARTING_X);
-        setY(STARTING_Y);
+        setX(START_POSITION[0]);
+        setY(START_POSITION[1]);
 
         movementIncrements = STARTING_MOVE_INCREMENTS;
-
-        setX(STARTING_X);
-        setY(STARTING_Y);
 
         direction = new FacingRight();
     }

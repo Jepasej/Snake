@@ -5,7 +5,7 @@ import javafx.scene.input.KeyCode;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Snake
+public class Snake implements PlayerObject
 {
     SnakeHead head;
     List<SnakeBody> body;

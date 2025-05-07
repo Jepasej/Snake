@@ -1,7 +1,5 @@
 package SnakeGame.Model;
 
-import javafx.scene.canvas.Canvas;
-
 import java.util.List;
 
 public class CollisionChecker
@@ -14,7 +12,7 @@ public class CollisionChecker
      * @param gameArea current size of gamearea
      * @return collision status of snake
      */
-    public boolean checkSnakeCollision(Snake snake, List<Wall> gameArea)
+    public boolean checkSnakeCollision(PlayerObject snake, List<Wall> gameArea)
     {
         //checks wall for collision
         for (Wall wall : gameArea)
@@ -47,7 +45,7 @@ public class CollisionChecker
      * @param food model representing food
      * @return collision status of SnakeHead and Food
      */
-    public boolean checkFoodCollision(Snake snake, Food food)
+    public boolean checkFoodCollision(PlayerObject snake, Food food)
     {
         if(snake.getHead().compareTo(food) == same)
         {
