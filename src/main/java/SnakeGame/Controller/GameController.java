@@ -16,6 +16,7 @@ import java.util.List;
 /**
  * Controller of the SnakeGame, handles userinput and communication between Model and View.
  * Defines the game area and UI and relays it to the View.
+ * CURRENTLY SPEEDY IS ONLY RESET ONCE EVEN IF TWO HAVE BEEN PICKED UP
  */
 public class GameController
 {
@@ -52,6 +53,7 @@ public class GameController
     private boolean gameOver;
     private boolean foodReached;
     private boolean isSuper;
+    private boolean isInsaneMode = false;
     //endregion
 
     /**
@@ -191,6 +193,12 @@ public class GameController
         if(speedyStopWatch.isStarted()||superStopWatch.isStarted())
         {
             checkPowerUp();
+        }
+
+        if(getScore()>4 && !isInsaneMode)
+        {
+            gameView.insaneMode();
+            isInsaneMode = true;
         }
     }
 

@@ -8,9 +8,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.scene.layout.Pane;
-
 import java.util.List;
 
+/**
+ * Class in charge of UI and rendering game.
+ * NEEDS SEVERE CLEANUP. ONLY DEPENDENCY SHOULD BE BLOCK OR NOTHING. MAYBE ONLY X,Y INTS/INT ARRAYS
+ */
 public class GameView {
 
     private Canvas canvas;
@@ -33,7 +36,7 @@ public class GameView {
     {
         root = new Pane();
         stage = new Stage();
-        scene = new Scene(root, 400, 480);
+        scene = new Scene(root, 500, 500);
         canvas = new Canvas(root.getWidth(), root.getHeight());
         root.getChildren().add(canvas);
         gc = canvas.getGraphicsContext2D();
@@ -41,6 +44,11 @@ public class GameView {
         stage.setTitle("sssssssssssssnaaake gaaame!");
         stage.setScene(scene);
         stage.show();
+    }
+
+    public void insaneMode()
+    {
+        root.setRotate(90);
     }
 
     public void initialiseGameArea(List<Wall> gameAreaBorder, int score)
