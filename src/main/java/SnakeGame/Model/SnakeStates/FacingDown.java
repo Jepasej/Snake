@@ -2,6 +2,9 @@ package SnakeGame.Model.SnakeStates;
 
 import javafx.scene.input.KeyCode;
 
+/**
+ * State for moving down
+ */
 public class FacingDown implements DirectionState
 {
     @Override

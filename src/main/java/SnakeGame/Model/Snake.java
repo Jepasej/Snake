@@ -1,10 +1,12 @@
 package SnakeGame.Model;
 
 import javafx.scene.input.KeyCode;
-
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Current implementation of the player object.
+ */
 public class Snake implements PlayerObject
 {
     SnakeHead head;
@@ -13,6 +15,9 @@ public class Snake implements PlayerObject
     private int tempX;
     private int tempY;
 
+    /**
+     * Sets up a fully functional snake for use in the game, now with a head and a body!
+     */
     public Snake()
     {
         head = new SnakeHead();
@@ -21,11 +26,18 @@ public class Snake implements PlayerObject
         body.add(new SnakeBody(getHeadX() - getHeadSize(), getHeadY()));
     }
 
+    /**
+     * Relays user input to head.
+     * @param keyCode user input
+     */
     public void handleInput(KeyCode keyCode)
     {
         head.changeFacing(keyCode);
     }
 
+    /**
+     * Updates coordinates of head and body
+     */
     public void move()
     {
         tempX = getHeadX();
@@ -47,11 +59,17 @@ public class Snake implements PlayerObject
         }
     }
 
+    /**
+     * Adds 1 segment to the size of snake's body.
+     */
     public void grow()
     {
         body.add(new SnakeBody(tempX, tempY));
     }
 
+    /**
+     * Toggles between SnakeHead and SnakeHeadSuper depending on current head class
+     */
     public void changeHead()
     {
         int x = getHeadX();

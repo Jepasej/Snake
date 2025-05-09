@@ -1,5 +1,8 @@
 package SnakeGame.Model;
 
+/**
+ * Class modelling a stopwatch to time objects and states in the game
+ */
 public class StopWatch
 {
     private long startTime;

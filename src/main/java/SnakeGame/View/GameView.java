@@ -46,9 +46,9 @@ public class GameView {
         stage.show();
     }
 
-    public void insaneMode()
+    public void insaneMode(int rotation)
     {
-        root.setRotate(90);
+        root.setRotate(rotation);
     }
 
     public void initialiseGameArea(List<Wall> gameAreaBorder, int score)

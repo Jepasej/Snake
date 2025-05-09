@@ -16,40 +16,47 @@ import java.util.List;
 /**
  * Controller of the SnakeGame, handles userinput and communication between Model and View.
  * Defines the game area and UI and relays it to the View.
+ * Runs the processInput and update methods of the game loop design pattern
+ * to do:
  * CURRENTLY SPEEDY IS ONLY RESET ONCE EVEN IF TWO HAVE BEEN PICKED UP
  */
 public class GameController
 {
-    private GameView gameView;
-    private int canvasStartX = 0;
-    private int canvasStartY = 0;
+    //region Constants
+    private final int INITIAL_GAME_SPEED_MILLIS = 150;
+    private final int FOOD_RESET_TIME_MILLIS = 8000;
+    private final int SPEEDY_RESET_TIME_MILLIS = 4000;
+    private final int SUPER_RESET_TIME_MILLIS = 8000;
+    private final int GAME_SPEED_DECREMENT = 2;
+    private final int SPEEDY_DECREMENT = 40;
+    private final int GAME_AREA_START_X = 0;
+    private final int GAME_AREA_START_Y = 0;
+    private int SCORE_AREA_HEIGHT = 80;
+    //endregion
+    //region Primitives
+    private int gameSpeedMillis = 0;
     private int canvasWidth;
     private int canvasHeight;
-    private int gameAreaStartX = 0;
-    private int gameAreaStartY = 0;
     private int gameAreaWidth;
     private int gameAreaHeight;
+    //endregion
+    //region GameObjects
+    private GameView gameView;
     private List<Wall> gameAreaBorder;
     private PlayerObject playerObject;
     private Food food;
-    private final int FOOD_RESET_TIME_MILLIS = 8000*2;
-    private final int SPEEDY_RESET_TIME_MILLIS = 4000*2;
-    private final int SUPER_RESET_TIME_MILLIS = 8000*2;
     private CollisionChecker collisionChecker;
+    //endregion
+    //region ServiceObjects
+    private Timeline timeline = new Timeline();
+    private KeyCode keyCode;
+    private KeyCode[] acceptedInputs = {KeyCode.UP, KeyCode.DOWN, KeyCode.LEFT, KeyCode.RIGHT};
     private StopWatch foodStopWatch = new StopWatch();
     private StopWatch speedyStopWatch = new StopWatch();
     private StopWatch superStopWatch = new StopWatch();
     private Score score;
-    private final int INITIAL_GAME_SPEED_MILLIS = 200;
-    private final int GAME_SPEED_DECREMENT = 2;
-    private final int SPEEDY_DECREMENT = 40;
-    private int gameSpeedMillis = 0;
-    private Timeline timeline = new Timeline();
-    private KeyCode keyCode;
-    private KeyCode[] acceptedInputs = {KeyCode.UP, KeyCode.DOWN, KeyCode.LEFT, KeyCode.RIGHT};
-    private int scoreAreaHeight = 80;
-
-    //region flags
+    //endregion
+    //region Flags
     private boolean gameOver;
     private boolean foodReached;
     private boolean isSuper;
@@ -57,7 +64,7 @@ public class GameController
     //endregion
 
     /**
-     * Constructor of GameController, initialises instance variables and game UI
+     * Constructor of GameController, initialises instance variables, game UI and runs the game
      */
     public GameController()
     {
@@ -139,9 +146,6 @@ public class GameController
         playerObject = new Snake();
     }
 
-    /**
-     * Initialises the GameView and related variables for use in the controller.
-     */
     private void setupGameView()
     {
         gameView = new GameView();
@@ -159,9 +163,8 @@ public class GameController
 
     private void render()
     {
-        if(playerObject.getHead() instanceof SnakeHeadSuper)
+        if(playerObject.getHead() instanceof SnakeHeadSuper head)
         {
-            SnakeHeadSuper head = (SnakeHeadSuper) playerObject.getHead();
             head.setSuperHead();
             gameView.render(playerObject,food, getScore(), head.getSuperHead());
         }
@@ -195,9 +198,9 @@ public class GameController
             checkPowerUp();
         }
 
-        if(getScore()>4 && !isInsaneMode)
+        if(getScore()>12 && !isInsaneMode)
         {
-            gameView.insaneMode();
+            gameView.insaneMode(90);
             isInsaneMode = true;
         }
     }
@@ -334,7 +337,7 @@ public class GameController
         return collisionChecker.checkCollision(b1, b2);
     }
 
-    public void increaseScore()
+    private void increaseScore()
     {
         score.increaseScore();
     }
@@ -372,8 +375,8 @@ public class GameController
             //top border
             if(i == 0)
             {
-                int lastWallX = gameAreaStartX;
-                int lastWallY = gameAreaStartY;
+                int lastWallX = GAME_AREA_START_X;
+                int lastWallY = GAME_AREA_START_Y;
 
                 //10 is block size
                 for(int j = 0; j < ((gameAreaWidth/wallSize)); j++)
@@ -387,7 +390,7 @@ public class GameController
             //bottom border
             if(i == 1)
             {
-                int lastWallX = gameAreaStartX;
+                int lastWallX = GAME_AREA_START_X;
                 int lastWallY = gameAreaHeight-wallSize;
 
                 //10 is block size
@@ -403,7 +406,7 @@ public class GameController
             //bottombottom border
             if(i == 1)
             {
-                int lastWallX = gameAreaStartX;
+                int lastWallX = GAME_AREA_START_X;
                 int lastWallY = canvasHeight-wallSize;
 
                 //10 is block size
@@ -420,8 +423,8 @@ public class GameController
             if(i == 2)
             {
 
-                int lastWallX = gameAreaStartX;
-                int lastWallY = gameAreaStartY;
+                int lastWallX = GAME_AREA_START_X;
+                int lastWallY = GAME_AREA_START_Y;
 
                 //10 is block size
                 for(int j = 0; j < ((canvasHeight/wallSize)); j++)
@@ -436,7 +439,7 @@ public class GameController
             if(i == 3)
             {
                 int lastWallX = gameAreaWidth-wallSize;
-                int lastWallY = gameAreaStartY;
+                int lastWallY = GAME_AREA_START_Y;
 
                 //10 is block size
                 for(int j = 0; j < ((canvasHeight/wallSize)); j++)
@@ -464,10 +467,10 @@ public class GameController
 //
 //        // Define border parameters: [startX, startY, isHorizontal, length]
 //        int[][] borderParams = {
-//                {gameAreaStartX, gameAreaStartY, 1, gameAreaWidth / wallSize},             // Top border
+//                {gameAreaStartX, GAME_AREA_START_Y, 1, gameAreaWidth / wallSize},             // Top border
 //                {gameAreaStartX, gameAreaHeight - wallSize - scoreAreaHeight, 1, gameAreaWidth / wallSize}, // Bottom border
-//                {gameAreaStartX, gameAreaStartY, 0, gameAreaHeight / wallSize},            // Left border
-//                {gameAreaWidth - wallSize, gameAreaStartY, 0, gameAreaHeight / wallSize}   // Right border
+//                {gameAreaStartX, GAME_AREA_START_Y, 0, gameAreaHeight / wallSize},            // Left border
+//                {gameAreaWidth - wallSize, GAME_AREA_START_Y, 0, gameAreaHeight / wallSize}   // Right border
 //        };
 //
 //        for (int[] params : borderParams) {
@@ -493,7 +496,7 @@ public class GameController
     private void setGameArea()
     {
         gameAreaWidth = canvasWidth;
-        gameAreaHeight = canvasHeight-scoreAreaHeight;
+        gameAreaHeight = canvasHeight-SCORE_AREA_HEIGHT;
     }
 
     private void setCanvasHeight()

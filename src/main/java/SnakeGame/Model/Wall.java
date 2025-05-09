@@ -1,5 +1,9 @@
 package SnakeGame.Model;
 
+/**
+ * Class for creation of the gameborder.
+ * Could probably just be a block???
+ */
 public class Wall extends Block
 {
     public Wall()

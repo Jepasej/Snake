@@ -1,16 +1,21 @@
 package SnakeGame.Model;
 
-import javafx.scene.paint.Paint;
-
-import java.awt.*;
 import java.util.Random;
 
+/**
+ * Class modelling food
+ */
 public class Food extends Block
 {
     private Random r = new Random();
     private Colour colour;
     private Type type;
 
+    /**
+     * Constructs food and ensures it is placed in the block grid.
+     * @param x bound of food's x coordinate
+     * @param y bound of food's y coordinate
+     */
     public Food(int x, int y)
     {
         int tempVal = r.nextInt(getSize(),x-getSize());

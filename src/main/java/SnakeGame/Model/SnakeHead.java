@@ -3,22 +3,25 @@ package SnakeGame.Model;
 import SnakeGame.Model.SnakeStates.DirectionState;
 import SnakeGame.Model.SnakeStates.FacingRight;
 import javafx.scene.input.KeyCode;
-
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class modelling the basic snakehead
+ */
 public class SnakeHead extends Block
 {
     private final int[] START_POSITION = {200,100};
     private final int STARTING_MOVE_INCREMENTS = 10;
     public List<SnakeHead> superHead = new ArrayList<>();
-
     private int lastX;
     private int lastY;
-
     private DirectionState direction;
     private int movementIncrements;
 
+    /**
+     * Creates a new snakehead for game startup
+     */
     public SnakeHead()
     {
         setX(START_POSITION[0]);
@@ -29,12 +32,23 @@ public class SnakeHead extends Block
         direction = new FacingRight();
     }
 
+    /**
+     * Creates a new snakehead for use in the SnakeHeadSuper class
+     * @param x
+     * @param y
+     */
     public SnakeHead(int x, int y)
     {
         setX(x);
         setY(y);
     }
 
+    /**
+     * For changeHead() method in Snake class, making sure the snake moves in a direction.
+     * @param x
+     * @param y
+     * @param direction
+     */
     public SnakeHead(int x, int y, DirectionState direction)
     {
         setX(x);
@@ -43,10 +57,16 @@ public class SnakeHead extends Block
         movementIncrements = STARTING_MOVE_INCREMENTS;
     }
 
+    /**
+     * Relayed from Snake class.
+     * Changes movement direction of the snake.
+     * @param code
+     */
     public void changeFacing(KeyCode code)
     {
         direction = direction.changeDirection(code);
     }
+
 
     public void updateCoordinates()
     {
@@ -64,16 +84,6 @@ public class SnakeHead extends Block
     {
         lastY = getY();
         setY( direction.updateY( lastY, movementIncrements ) );
-    }
-
-    public int getLastX()
-    {
-        return lastX;
-    }
-
-    public int getLastY()
-    {
-        return lastY;
     }
 
     public List<SnakeHead> getSuperHead()

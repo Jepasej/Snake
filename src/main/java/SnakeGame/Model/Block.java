@@ -2,11 +2,19 @@ package SnakeGame.Model;
 
 import java.util.Arrays;
 
+/**
+ * Superclass for all objects interacting in the game, ensuring a gridbased game..
+ */
 public class Block implements Comparable<Block>
 {
     private final int SIZE = 10;
     private int[] coordinates = new int[2];
 
+    /**
+     * Method for comparing blocks coordinates
+     * @param o the object to be compared.
+     * @return 0 if equal, 1 if not equal
+     */
     @Override
     public int compareTo(Block o)
     {

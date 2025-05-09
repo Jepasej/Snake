@@ -3,6 +3,9 @@ package SnakeGame.Model;
 import javafx.scene.input.KeyCode;
 import java.util.List;
 
+/**
+ * Interface defining a player object, such as a snake, for easy removal of current player object implementation.
+ */
 public interface PlayerObject
 {
     int getHeadX();

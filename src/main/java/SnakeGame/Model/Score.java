@@ -1,5 +1,8 @@
 package SnakeGame.Model;
 
+/**
+ * Keeps a tally of player's score
+ */
 public class Score
 {
     private int score;
